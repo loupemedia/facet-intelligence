@@ -1,0 +1,66 @@
+---
+description: Tests must encode product/architecture rules — never written only to match existing code
+alwaysApply: true
+---
+
+# Test Intent (Agent Checklist)
+
+When creating or changing tests, you MUST follow this process. The user relies on agents to apply it; do not skip steps.
+
+## 1. State the rule first (one sentence)
+
+Before writing assertions, write (in your reply or a test module docstring) the rule in plain English.
+
+**Good:** "Market-index pricing profiles must define `distribution_style`; calculator and scoring profiles must not."
+**Bad:** "All YAML files in `content_profiles/` must have `distribution_style`." (that only describes current layout)
+
+## 2. Prove the test can fail for the right reason
+
+| Change type | Required approach |
+|-------------|-------------------|
+| **Bug fix** | Add a test that **fails on the old bug**, then fix code. |
+| **New behaviour** | Add a test that **fails without the new code**, then implement. |
+| **Config / site type** | Scope assertions by `site_type`, `_template`, or role — not "every file in a folder". |
+| **Refactor only** | Existing tests must still pass; do not weaken assertions to greenwash. |
+
+If you cannot describe what would break when the rule is violated, **do not add the test**.
+
+## 3. Forbidden patterns (never do these)
+
+- Loosening or deleting assertions so existing code passes without a documented rule change.
+- Parametrising over all files in a directory when only a **subset** must satisfy the contract.
+- Copying production values into the test with no independent expected outcome (snapshot-only tests for business logic).
+- Skipping tests to avoid fixing a real product mismatch (skips are OK only when the rule explicitly exempts a class, e.g. `calculator_tool`).
+
+## 4. Required in every PR that touches tests
+
+In the checkpoint / PR summary, include:
+
+```text
+Test intent: <one-sentence rule>
+Would fail if: <concrete example>
+```
+
+Example:
+
+```text
+Test intent: C5.5 emits one comparison payload per compare_to target.
+Would fail if: inner loop used continue at wrong indent (0 payloads for all targets).
+```
+
+## 5. Order of work (default)
+
+| Work | Order |
+|------|--------|
+| Pure Python logic (pricing, dates, transforms) | **Red → green** preferred: failing test first, then implementation. |
+| YAML / site config | **Rule → config → test** that encodes the rule (test may come immediately after config in same PR). |
+| Exploratory / spike | Tests before merge; same PR unless user explicitly defers. |
+
+Strict TDD for every file is not required. **Rule-first tests** are required.
+
+## 6. Reference
+
+Full methodology: `.cursor/rules/testing.md` → "Test intent (rules, not snapshots)".
+Config example: `tests/unit/test_distribution_config.py` → `_requires_market_index_profile()`.
+Batched upserts: `.cursor/rules/testing.md` → "Batched upserts (`execute_values` + `ON CONFLICT`)"; example `tests/unit/test_C4_5_url_registry.py` → `TestDedupeRegistryRows`.
+Batched reads / prefetch: `.cursor/rules/testing.md` → "Batched reads / prefetch"; checklist `docs/architecture/pipeline-script-development.md` → § G; example `tests/unit/test_C5_5_comparison_data.py` → `TestPrefetchComparisonPrices`.

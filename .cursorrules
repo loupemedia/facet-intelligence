@@ -1,0 +1,34 @@
+# Key Reference Documents
+- `docs/ENGINEERING_PRINCIPLES.md` — core principles (summary; sync from diamond-prices for full text)
+- `docs/ARCHITECTURE.md` — system overview
+- `docs/SYSTEM_DEPENDENCIES.md` — upstream/downstream integration map
+- `docs/SECURITY_HARDENING.md` — env var registry
+- `docs/TECH_DEBT.md` — backlog
+- `.cursor/rules/testing.md` — testing rules
+- `Plan.plan.md` — master plan
+- Cross-repo product vision: `../diamond-prices/docs/architecture/facet-intelligence-product-vision.md`
+- Cross-repo boundaries: `../diamond-prices/docs/architecture/platform-product-boundaries.md`
+- Consumer client PRD: `../diamond-prices/_bmad-output/planning-artifacts/PRDs/PRD-009_CP46-50_Consumer_Diamond_Advisory.md`
+
+# Import Rules
+- Absolute imports from project root: `from facet_intelligence.api.app import app`
+- stdlib → blank → third-party → blank → local; alphabetical within groups
+
+# Logging, DB, Security
+- `logging.getLogger(__name__)`; `exc_info=True` on errors
+- `shared.db.DatabasePool`; close cursors in `finally`
+- Credentials from `os.environ` only; document new vars in `SECURITY_HARDENING.md`
+- SQL: `%s` placeholders only
+
+# Script bootstrap (Sevalla)
+```python
+import os
+import sys
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+```
+
+# Batch script prefix
+Module prefix **F** for Facet Intelligence batch scripts (e.g. `F1_inventory_sync.py`).

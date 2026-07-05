@@ -1,0 +1,14 @@
+# Core
+psycopg2-binary>=2.9.9
+pyyaml>=6.0.1
+httpx>=0.27.0
+
+# API
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+gunicorn>=23.0.0
+
+# Dev / testing
+pytest>=8.3.0
+ruff>=0.9.0
+detect-secrets>=1.5.0
