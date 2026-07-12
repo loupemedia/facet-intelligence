@@ -8,6 +8,7 @@
 - `Plan.plan.md` — master plan
 - Cross-repo product vision: `../diamond-prices/docs/architecture/facet-intelligence-product-vision.md`
 - Cross-repo boundaries: `../diamond-prices/docs/architecture/platform-product-boundaries.md`
+- SparkleScore continuous carat scoring (parked): `../sparklescoredata/docs/continuous-carat-scoring.md` — MVP Value/Face-Up gap for off-band carats (e.g. 1.26 ct)
 - Consumer client PRD: `../diamond-prices/_bmad-output/planning-artifacts/PRDs/PRD-009_CP46-50_Consumer_Diamond_Advisory.md`
 
 # Import Rules

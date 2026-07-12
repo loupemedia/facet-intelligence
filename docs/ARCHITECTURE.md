@@ -20,6 +20,8 @@ Facet Intelligence is the **quality-aware recommendation and inventory-intellige
 | Platform map | `diamond-prices/docs/architecture/platform-product-boundaries.md` |
 | Consumer surfaces | `diamond-prices` PRD-009 |
 | SparkleScore scope | `sparklescoredata/docs/ARCHITECTURE.md` |
+| Continuous carat scoring (parked) | `sparklescoredata/docs/continuous-carat-scoring.md` — fixes off-band Value/Face-Up (e.g. 1.26 ct); **not implemented** |
+| Upstream feed obligations | `diamond-prices/docs/architecture/sparklescore-continuous-scoring.md` |
 
 ## Data flow
 

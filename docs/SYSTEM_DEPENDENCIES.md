@@ -5,6 +5,7 @@
 | System | What | Purpose |
 |--------|------|---------|
 | **SparkleScore API** | `POST /api/v1/score` | Per-candidate quality for recommend/discover |
+| **SparkleScore PRD-SS-005** (parked) | `sparklescoredata/docs/continuous-carat-scoring.md` | **Known gap:** MVP Value/Face-Up fail for off-band carats (e.g. 1.26 ct) until continuous scoring ships |
 | **diamond-prices R1 feeds** | Country retailer pools | `ringspo-us` inventory source (dogfood) |
 | **`country_markets.yaml`** | Tenant → retailer mapping | Config in diamond-prices |
 
