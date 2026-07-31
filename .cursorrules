@@ -32,5 +32,19 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 ```
 
-# Batch script prefix
-Module prefix **F** for Facet Intelligence batch scripts (e.g. `F1_inventory_sync.py`).
+# Module Structure & Script Numbering Rules
+- Runnable entrypoint / batch scripts use the **F** prefix and a number: `F{N}_{descriptive_name}.py`
+- Scripts live under a dedicated folder (e.g. `scripts/` or a named module folder) — never as loose files at the project root
+- The number reflects **run / dependency order** when scripts form a sequence; otherwise assign the next free integer in the series
+- Sub-numbering uses a **dot**: `F1.1_descriptive_name.py` (correct), never `F1_1_descriptive_name.py`
+- Importable library code stays in `facet_intelligence/` and `shared/` — do **not** give those modules an F-prefix
+- When renaming or adding a script, update any docs/planning references in the same change
+
+Example (future / planned):
+
+| Script | Purpose |
+|--------|---------|
+| `F1_inventory_sync.py` | Tenant inventory sync |
+
+# PRD Creation Rules
+- Prefer the Smart PRD / planning workflow used across the platform when adding product specs under `planning/`

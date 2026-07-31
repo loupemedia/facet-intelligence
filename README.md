@@ -49,6 +49,7 @@ facet_intelligence/   # Core package
 └── api/              # FastAPI v1 routes
 
 shared/               # db, pipeline_date, services/
+scripts/              # F-series batch entrypoints (F{N}_*.py) — when added
 planning/             # PRD-FI-001, epics, stories (canonical planning home)
 migrations/           # facet_intelligence PostgreSQL
 ```
