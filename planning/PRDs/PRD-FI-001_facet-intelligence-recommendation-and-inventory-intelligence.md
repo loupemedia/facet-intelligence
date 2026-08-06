@@ -2,7 +2,7 @@
 prd_number: PRD-FI-001
 title: "Facet Intelligence — Recommendation & Inventory Intelligence API"
 status: draft
-phase: "Pre-build planning — implements CP 48 engine; future `facet-intelligence` repo"
+phase: "Active build — Epic 1.1 scaffold complete (2026-07-06); ingestion stories 1.2–1.4 next"
 created: 2026-07-05
 owner: Alastair Smith
 related_checkpoints: [CP 48]

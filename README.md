@@ -2,7 +2,11 @@
 
 API-first, multi-tenant **diamond recommendation and inventory-intelligence** service.
 
-Facet Intelligence ingests tenant inventory, diffs day-over-day, ranks quality-aware recommendations (via SparkleScore), and emits webhook events (`diamond.disappeared`, `diamond.price_dropped`, `diamond.better_match`).
+## Current status (2026-08-07)
+
+**Epic 1.1 complete** — `GET /v1/health` only. Ingestion, inventory diff, ranking, and webhooks are **planned** (Epics 1.2–5). Package stubs exist under `facet_intelligence/` but are not wired to routes.
+
+Facet Intelligence will ingest tenant inventory, diff day-over-day, rank quality-aware recommendations (via SparkleScore), and emit webhook events (`diamond.disappeared`, `diamond.price_dropped`, `diamond.better_match`).
 
 **Product name:** Facet Intelligence (not "Facet IQ" — avoids collision with jewellery POS "Carat IQ").
 
@@ -37,7 +41,7 @@ See [`docs/SECURITY_HARDENING.md`](docs/SECURITY_HARDENING.md). Minimum for loca
 | `FACET_INTELLIGENCE_API_KEY` | Tenant API auth (dev) |
 | `SPARKLESCORE_API_URL`, `SPARKLESCORE_API_KEY` | SparkleScore client (Epic 3+) |
 
-## Project structure
+## Project structure (target layout — stubs today)
 
 ```
 facet_intelligence/   # Core package

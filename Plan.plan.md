@@ -1,7 +1,7 @@
 # Facet Intelligence — Master Plan
 
 **Status:** Scaffold complete (2026-07-06); Epic 1.1 done — **next: Epic 1.2–1.4 ingestion**  
-**Updated:** 2026-07-26  
+**Updated:** 2026-08-07  
 **Product:** Facet Intelligence (`facet-intelligence` repo)
 
 ## Vision
@@ -30,7 +30,7 @@ Independent, licensable diamond recommendation and inventory-intelligence API. O
 
 ## Dependencies
 
-1. SparkleScore SS-002 staging pilot (before Epic 3) — see [`sparklescoredata/Plan.plan.md`](../sparklescoredata/Plan.plan.md)
+1. SparkleScore SS-002 API **implemented**; staging pilot sign-off pending (before Epic 3 wiring) — see [`sparklescoredata/Plan.plan.md`](../sparklescoredata/Plan.plan.md)
 2. diamond-prices PRD-009 client (Epic 4)
 
 ## Planning & cross-repo

@@ -5,7 +5,7 @@
 ### PRD-FI-001: Facet Intelligence — Recommendation & Inventory Intelligence
 
 - **Checkpoints:** CP 48 (primary); CP 49 (event producer)
-- **Status:** draft — repo scaffolded 2026-07-06
+- **Status:** draft — Epic 1.1 complete (2026-07-06); ingestion stories 1.2–1.4 next
 - **Location:** [PRD-FI-001_facet-intelligence-recommendation-and-inventory-intelligence.md](PRDs/PRD-FI-001_facet-intelligence-recommendation-and-inventory-intelligence.md)
 - **Epics:**
   - [Epic 1: Scaffold & Ingestion](epics/PRD-FI-001/epic-1_scaffold-and-ingestion.md)

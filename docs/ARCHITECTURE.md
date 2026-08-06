@@ -25,6 +25,17 @@ Facet Intelligence is the **quality-aware recommendation and inventory-intellige
 
 ## Data flow
 
+### Current implementation (2026-07-06 scaffold)
+
+| Component | Status |
+|-----------|--------|
+| `GET /v1/health` | ✅ Live |
+| `ingestion/`, `inventory/`, `recommend/`, `events/` | Package stubs only |
+| `SparkleScoreClient` | Interface + `NotImplementedError` stub |
+| `DatabasePool` | Helper exists; not wired to API |
+
+### Target architecture
+
 ```text
 Tenant inventory (CSV/JSON/feed/country pool)
         │
