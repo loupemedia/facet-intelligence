@@ -20,3 +20,5 @@
 ## Product vision (cross-repo)
 
 `diamond-prices/docs/architecture/facet-intelligence-product-vision.md`
+
+Decision studio UI + later agent citation (not a PRD): `diamond-prices/docs/strategy/diamond-decision-experience.md`

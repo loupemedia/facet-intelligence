@@ -25,3 +25,4 @@
 
 - Product vision: `diamond-prices/docs/architecture/facet-intelligence-product-vision.md`
 - Platform boundaries: `diamond-prices/docs/architecture/platform-product-boundaries.md`
+- Decision studio + later agent citation (not a PRD): `diamond-prices/docs/strategy/diamond-decision-experience.md`

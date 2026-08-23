@@ -19,6 +19,8 @@ Facet Intelligence is the **quality-aware recommendation and inventory-intellige
 | Product vision | `diamond-prices/docs/architecture/facet-intelligence-product-vision.md` |
 | Platform map | `diamond-prices/docs/architecture/platform-product-boundaries.md` |
 | Consumer surfaces | `diamond-prices` PRD-009 |
+| Stone identity keys (`stone_key` vs `listing_id` homonyms) | `diamond-prices/docs/architecture/stone-identity-keys.md` |
+| Decision studio UI + later agent citation (not a PRD) | `diamond-prices/docs/strategy/diamond-decision-experience.md` |
 | SparkleScore scope | `sparklescoredata/docs/ARCHITECTURE.md` |
 | Continuous carat scoring (parked) | `sparklescoredata/docs/continuous-carat-scoring.md` — fixes off-band Value/Face-Up (e.g. 1.26 ct); **not implemented** |
 | Upstream feed obligations | `diamond-prices/docs/architecture/sparklescore-continuous-scoring.md` |

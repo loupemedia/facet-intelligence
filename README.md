@@ -60,7 +60,7 @@ migrations/           # facet_intelligence PostgreSQL
 
 ## Planning home
 
-**PRD-FI-001 and epics live in this repo** (`planning/`). Cross-repo vision: `diamond-prices/docs/architecture/facet-intelligence-product-vision.md` and `platform-product-boundaries.md`.
+**PRD-FI-001 and epics live in this repo** (`planning/`). Cross-repo vision: `diamond-prices/docs/architecture/facet-intelligence-product-vision.md` and `platform-product-boundaries.md`. Studio UI + later agent citation (not a PRD): `diamond-prices/docs/strategy/diamond-decision-experience.md`.
 
 ## Deployment
 

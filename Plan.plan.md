@@ -40,4 +40,5 @@ Independent, licensable diamond recommendation and inventory-intelligence API. O
 - Vision: [`../diamond-prices/docs/architecture/facet-intelligence-product-vision.md`](../diamond-prices/docs/architecture/facet-intelligence-product-vision.md)
 - Boundaries: [`../diamond-prices/docs/architecture/platform-product-boundaries.md`](../diamond-prices/docs/architecture/platform-product-boundaries.md)
 - Consumer surfaces: `../diamond-prices` PRD-009
+- Decision studio + later agent citation (not a PRD): [`../diamond-prices/docs/strategy/diamond-decision-experience.md`](../diamond-prices/docs/strategy/diamond-decision-experience.md)
 - GTM (canonical): [`../diamond-prices/docs/strategy/gtm/README.md`](../diamond-prices/docs/strategy/gtm/README.md)

@@ -11,6 +11,7 @@
 - **Cross-repo GTM (canonical): `../diamond-prices/docs/strategy/gtm/README.md`** — all go-to-market strategy for Facet Intelligence lives there, not in this repo. Audiences: `gtm/audiences.md` (cite segment IDs, e.g. `UPSTREAM-LIQUIDITY`, `RET-MIDSIZE-DTC`); upstream SKU ladder: `gtm/upstream-platform-partnerships.md`; packaging: `gtm/monetisation.md`
 - SparkleScore continuous carat scoring (parked): `../sparklescoredata/docs/continuous-carat-scoring.md` — MVP Value/Face-Up gap for off-band carats (e.g. 1.26 ct)
 - Consumer client PRD: `../diamond-prices/_bmad-output/planning-artifacts/PRDs/PRD-009_CP46-50_Consumer_Diamond_Advisory.md`
+- Decision studio UI + later agent citation (not a PRD): `../diamond-prices/docs/strategy/diamond-decision-experience.md`
 
 # Import Rules
 - Absolute imports from project root: `from facet_intelligence.api.app import app`

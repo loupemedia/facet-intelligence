@@ -127,6 +127,7 @@ Documented in **PRD-009** (CP 46–47, 49–50): accounts, shortlists, plugin su
 | Stone input paths | `diamond-prices/docs/architecture/stone-input-paths.md` |
 | Repo bootstrap megaprompt | `diamond-prices/docs/architecture/facet-intelligence-bootstrap-prompt.md` |
 | Phase 8 consumer surfaces | `diamond-prices` PRD-009, `consumer-advisory-overview.md` |
+| Decision studio UI + later agent citation (not this PRD) | `diamond-prices/docs/strategy/diamond-decision-experience.md` |
 | Email dispatch (CP 49) | `diamond-prices/docs/architecture/email-strategy.md` |
 | SparkleScore scope fence | `sparklescoredata/docs/ARCHITECTURE.md` § What SparkleScore is not |
 | Engagement strategy | `diamond-prices/docs/strategy/user-engagement-retention.md` |
