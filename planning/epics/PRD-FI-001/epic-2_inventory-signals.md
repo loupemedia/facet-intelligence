@@ -1,7 +1,7 @@
 # Epic 2: Inventory Snapshot, Diff & Events (PRD-FI-001)
 
 **Checkpoints:** CP 48 (signals), CP 49 (event consumer)
-**Status:** not_started
+**Status:** in_progress — Stories 2.1–2.3 and 2.5 complete; 2.4 better-match stub (Epic 3)
 
 ## Goal
 

@@ -1,0 +1,19 @@
+# Retailer slug → code mapping for feed / stone-export rows.
+# Keys must match recommendation_retailers slugs in country_markets.yaml.
+
+retailers:
+  james_allen:
+    code: JA
+    name: James Allen
+  blue_nile:
+    code: BN
+    name: Blue Nile
+  brilliant_earth:
+    code: BE
+    name: Brilliant Earth
+  whiteflash:
+    code: WF
+    name: Whiteflash
+  brian_gavin:
+    code: BG
+    name: Brian Gavin

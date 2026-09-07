@@ -13,7 +13,7 @@
 | `FACET_INTELLIGENCE_API_KEY` | Staging+ | Bearer token for API requests |
 | `SPARKLESCORE_API_URL` | Epic 3+ | SparkleScore base URL |
 | `SPARKLESCORE_API_KEY` | Epic 3+ | SparkleScore API key |
-| `WEBHOOK_SIGNING_SECRET` | Staging+ | HMAC for outbound webhook signatures |
+| `RINGSPO_US_WEBHOOK_URL` | Epic 2+ | Engagement webhook for `ringspo-us` tenant events |
 
 When adding a new env var: update this table before merging dependent code.
 

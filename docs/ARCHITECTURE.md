@@ -32,7 +32,18 @@ Facet Intelligence is the **quality-aware recommendation and inventory-intellige
 | Component | Status |
 |-----------|--------|
 | `GET /v1/health` | ✅ Live |
-| `ingestion/`, `inventory/`, `recommend/`, `events/` | Package stubs only |
+| `POST /v1/inventory/sync` | ✅ Story 1.4 |
+| `ingestion/` (models, normalise, feed_loader, db_adapter) | ✅ Stories 1.2–1.3 |
+| `inventory/store` (tenant_listings upsert) | ✅ Story 1.4 |
+| `events/emitter` (`inventory.synced` stub) | ✅ Story 1.4 |
+| `inventory/snapshot`, `inventory/diff`, `inventory/signals` | ✅ Epic 2.1–2.3, 2.5 |
+| `inventory/better_match` | Stub (Epic 2.4 — needs SparkleScore Epic 3) |
+| `events/adapters/webhook_adapter` | ✅ Epic 2.5 |
+| `scripts/F1_daily_inventory_signals.py` | ✅ Epic 2.1 |
+| `POST /v1/recommend` | ✅ Epic 3 |
+| `recommend/` engine + vanilla scorer | ✅ Epic 3 |
+| `scoring/sparklescore_client` | ✅ Epic 3 (needs `SPARKLESCORE_API_URL`) |
+| `POST /v1/discover` | ✅ Epic 3.4 |
 | `SparkleScoreClient` | Interface + `NotImplementedError` stub |
 | `DatabasePool` | Helper exists; not wired to API |
 

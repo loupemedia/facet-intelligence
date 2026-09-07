@@ -1,0 +1,16 @@
+# Country market retailer pools for Facet Intelligence tenants.
+# Canonical policy lives in diamond-prices/config/country_markets.yaml — keep
+# recommendation_retailers in sync when the US pool changes.
+
+version: "1.0.0"
+
+markets:
+  us:
+    consumer_advisory:
+      enabled: true
+    recommendation_retailers:
+      - james_allen
+      - blue_nile
+      - brilliant_earth
+      - whiteflash
+      - brian_gavin

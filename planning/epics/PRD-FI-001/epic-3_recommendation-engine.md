@@ -1,7 +1,7 @@
 # Epic 3: Recommendation & Discover API (PRD-FI-001)
 
 **Checkpoint:** CP 48
-**Status:** not_started
+**Status:** complete — Stories 3.1–3.5 shipped
 
 ## Goal
 

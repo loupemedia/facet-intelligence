@@ -1,6 +1,6 @@
 # Facet Intelligence — Master Plan
 
-**Status:** Scaffold complete (2026-07-06); Epic 1.1 done — **next: Epic 1.2–1.4 ingestion**  
+**Status:** Epic 3 complete — `POST /v1/recommend` and `POST /v1/discover` shipped  
 **Updated:** 2026-08-07  
 **Product:** Facet Intelligence (`facet-intelligence` repo)
 
@@ -13,10 +13,11 @@ Independent, licensable diamond recommendation and inventory-intelligence API. O
 | Item | Status |
 |------|--------|
 | Repo scaffold (CI, FastAPI health, package layout, migrations shell) | ✅ Story 1.1 |
-| Canonical listing normalisation + `listing_id` | 📋 Story 1.2 |
-| Feed loader + `ringspo-us` country-pool adapter | 📋 Story 1.3 |
-| `POST /v1/inventory/sync` + `inventory.synced` stub | 📋 Story 1.4 |
-| Inventory signals / recommend / dogfood | Later epics |
+| Canonical listing normalisation + `listing_id` | ✅ Story 1.2 |
+| Feed loader + `ringspo-us` country-pool adapter | ✅ Story 1.3 |
+| `POST /v1/inventory/sync` + `inventory.synced` stub | ✅ Story 1.4 |
+| `POST /v1/recommend` (substitute_diamond, quality floor) | ✅ Epic 3.3 |
+| `POST /v1/discover` (intent-first) | ✅ Epic 3.4 |
 
 ## Phases
 

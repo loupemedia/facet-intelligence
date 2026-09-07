@@ -1,0 +1,15 @@
+{
+  "retailer_code": "BN",
+  "cert_lab": "GIA",
+  "cert_number": "2527938255",
+  "shape": "round",
+  "carat": 1.0,
+  "color": "G",
+  "clarity": "VS1",
+  "cut": "Excellent",
+  "measurements_mm": "6.50 x 6.55 x 4.02",
+  "price": 6200,
+  "currency": "USD",
+  "availability": "in_stock",
+  "product_url": "https://example.com/bn/stone-1"
+}

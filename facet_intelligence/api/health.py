@@ -10,5 +10,5 @@ def health() -> dict:
     return {
         "status": "ok",
         "service": "facet-intelligence",
-        "version": "0.1.0-scaffold",
+        "version": "0.1.0",
     }

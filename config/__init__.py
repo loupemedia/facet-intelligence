@@ -1,0 +1,1 @@
+"""Facet Intelligence configuration."""

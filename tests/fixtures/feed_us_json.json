@@ -1,0 +1,27 @@
+{
+  "listings": [
+    {
+      "retailer_code": "BN",
+      "cert_lab": "GIA",
+      "cert_number": "2527938255",
+      "shape": "round",
+      "carat": 1.0,
+      "color": "G",
+      "clarity": "VS1",
+      "cut": "Excellent",
+      "price": 6200,
+      "currency": "USD",
+      "diamond_type": "natural"
+    },
+    {
+      "retailer_code": "RT",
+      "cert_lab": "GIA",
+      "cert_number": "9999999999",
+      "shape": "round",
+      "carat": 1.0,
+      "price": 4000,
+      "currency": "USD",
+      "diamond_type": "natural"
+    }
+  ]
+}

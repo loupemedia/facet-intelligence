@@ -1,0 +1,40 @@
+[
+  {
+    "retailer": "James Allen",
+    "shape": "round",
+    "carat": 1.0,
+    "color": "G",
+    "clarity": "VS1",
+    "cut": "Ideal",
+    "cert_lab": "GIA",
+    "cert_number": "2527938255",
+    "price": 5980,
+    "diamond_type": "natural",
+    "measurements": "6.40 x 6.38 x 3.95",
+    "vendor_url": "https://example.com/ja/1",
+    "image_url": "https://example.com/ja/1.jpg"
+  },
+  {
+    "retailer": "Blue Nile",
+    "shape": "round",
+    "carat": 1.0,
+    "color": "G",
+    "clarity": "VS1",
+    "cut": "Excellent",
+    "cert_lab": "GIA",
+    "cert_number": "2527938255",
+    "price": 6200,
+    "diamond_type": "natural"
+  },
+  {
+    "retailer": "Ritani",
+    "shape": "round",
+    "carat": 1.0,
+    "color": "H",
+    "clarity": "SI1",
+    "cert_lab": "GIA",
+    "cert_number": "1111111111",
+    "price": 4500,
+    "diamond_type": "natural"
+  }
+]

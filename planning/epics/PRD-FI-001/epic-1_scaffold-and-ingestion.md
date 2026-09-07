@@ -1,7 +1,7 @@
 # Epic 1: Scaffold, Tenancy & Ingestion (PRD-FI-001)
 
 **Checkpoint:** CP 48 (foundation)
-**Status:** in_progress — repo scaffolded 2026-07-06 (`GET /v1/health`, CI, migrations shell)
+**Status:** complete — Stories 1.1–1.4 done; Epic 2 next
 
 ## Goal
 

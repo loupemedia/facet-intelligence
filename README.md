@@ -4,7 +4,7 @@ API-first, multi-tenant **diamond recommendation and inventory-intelligence** se
 
 ## Current status (2026-08-07)
 
-**Epic 1.1 complete** — `GET /v1/health` only. Ingestion, inventory diff, ranking, and webhooks are **planned** (Epics 1.2–5). Package stubs exist under `facet_intelligence/` but are not wired to routes.
+**Epic 3 complete** — `POST /v1/recommend` and `POST /v1/discover` live (quality floor on recommend, intent-first discover).
 
 Facet Intelligence will ingest tenant inventory, diff day-over-day, rank quality-aware recommendations (via SparkleScore), and emit webhook events (`diamond.disappeared`, `diamond.price_dropped`, `diamond.better_match`).
 
@@ -16,6 +16,63 @@ Facet Intelligence will ingest tenant inventory, diff day-over-day, rank quality
 |------|------|
 | [`diamond-prices`](../diamond-prices) | First API client + engagement layer (PRD-009); product vision docs |
 | [`sparklescoredata`](../sparklescoredata) | SparkleScore API — scoring backend for owned tenants |
+
+**Epic 2 in progress** — daily snapshots, disappearance (2-day grace), price-drop events, webhook delivery. Run `python scripts/F1_daily_inventory_signals.py` after sync. Apply migration `003` in TablePlus before first run.
+
+## Daily signals
+
+```bash
+python scripts/F1_daily_inventory_signals.py --tenant ringspo-us
+python scripts/F1_daily_inventory_signals.py --date 2026-03-07 --dry-run
+```
+
+Set `RINGSPO_US_WEBHOOK_URL` for webhook delivery to the engagement layer.
+
+## API (staging)
+
+```bash
+curl -X POST http://localhost:8000/v1/inventory/sync \
+  -H "Authorization: Bearer $FACET_INTELLIGENCE_API_KEY" \
+  -H "X-Facet-Intelligence-Tenant: ringspo-us" \
+  -H "Content-Type: application/json" \
+  -d @tests/fixtures/feed_us_json.json
+```
+
+Returns **202** with `listing_count`, `event_id`, and `synced_at`. Out-of-pool retailers are filtered for `ringspo-us`.
+
+**Database:** apply migrations `002` and `003` in TablePlus before first sync/signals run (see `migrations/README.md`).
+
+### Recommend
+
+```bash
+curl -X POST http://localhost:8000/v1/recommend \
+  -H "Authorization: Bearer $FACET_INTELLIGENCE_API_KEY" \
+  -H "X-Facet-Intelligence-Tenant: ringspo-us" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "anchor": {"listing_id": "BN_2527938255"},
+    "mode": "substitute_diamond",
+    "category": "good_value",
+    "constraints": {"budget_max": 8000, "in_stock": true}
+  }'
+```
+
+Requires `SPARKLESCORE_API_URL` and `SPARKLESCORE_API_KEY` for `ringspo-us`. Returns up to 5 alternatives with `score`, `headline`, and `reason_codes[]`.
+
+### Discover
+
+```bash
+curl -X POST http://localhost:8000/v1/discover \
+  -H "Authorization: Bearer $FACET_INTELLIGENCE_API_KEY" \
+  -H "X-Facet-Intelligence-Tenant: ringspo-us" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "buyer_intent": "best_sparkle",
+    "constraints": {"budget_max": 8000, "shape": "round", "in_stock": true}
+  }'
+```
+
+Returns up to 5 `recommendations[]` (same item shape as recommend alternatives). Optional `category` overrides ranking while `buyer_intent` records consumer intent. `safe_premium` and `lab_value` are deferred in v1.
 
 ## Quick start
 

@@ -1,0 +1,4 @@
+retailer,shape,carat,color,clarity,cut,cert_lab,cert_number,price,currency,diamond_type
+James Allen,round,1.00,G,VS1,Ideal,GIA,2527938255,5980,USD,natural
+Blue Nile,round,1.00,G,VS1,Excellent,GIA,2527938255,6200,USD,natural
+Ritani,round,1.00,H,SI1,Very Good,GIA,1111111111,4500,USD,natural
