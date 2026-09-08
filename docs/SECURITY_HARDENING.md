@@ -14,6 +14,7 @@
 | `SPARKLESCORE_API_URL` | Epic 3+ | SparkleScore base URL |
 | `SPARKLESCORE_API_KEY` | Epic 3+ | SparkleScore API key |
 | `RINGSPO_US_WEBHOOK_URL` | Epic 2+ | Engagement webhook for `ringspo-us` tenant events |
+| `FACET_INTELLIGENCE_WEBHOOK_SECRET` | Epic 2+ | HMAC secret for `X-Facet-Intelligence-Signature` on outbound webhooks |
 
 When adding a new env var: update this table before merging dependent code.
 
