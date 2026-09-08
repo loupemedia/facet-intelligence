@@ -6,12 +6,13 @@ ranking; buyer_intent is required.
 Would fail if: a listing outside carat_max appeared in the filtered candidate set.
 """
 
+import pytest
+
 from facet_intelligence.ingestion.models import CanonicalListing
 from facet_intelligence.recommend.discover import (
     _filter_discover_candidates,
     _resolve_rank_intent,
 )
-import pytest
 
 
 def _listing(
