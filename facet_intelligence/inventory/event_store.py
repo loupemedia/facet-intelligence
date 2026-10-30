@@ -68,6 +68,24 @@ class EmittedEventStore:
             self._db_pool = DatabasePool()
         return self._db_pool
 
+    def is_emitted(self, tenant_id: str, event_id: str) -> bool:
+        """Return True when this tenant already has event_id in the dedupe ledger."""
+        query = """
+            SELECT 1
+            FROM tenant_emitted_events
+            WHERE tenant_id = %s AND event_id = %s
+            LIMIT 1
+        """
+        pool = self._pool()
+        conn = pool.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(query, (tenant_id, event_id))
+            return cursor.fetchone() is not None
+        finally:
+            cursor.close()
+            pool.return_connection(conn)
+
     def record_if_new(self, tenant_id: str, event: dict[str, Any]) -> bool:
         """Persist event when event_id is new. Returns False if already emitted."""
         query = """

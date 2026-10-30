@@ -1,13 +1,16 @@
 """Daily signal orchestration (PRD-FI-001 Epic 2).
 
 Test intent: run_daily_inventory_signals compares live inventory to yesterday's
-snapshot, emits events once, and always captures today's snapshot.
+snapshot, delivers webhooks before dedupe, and always captures today's snapshot.
 
 Would fail if: first run with no yesterday snapshot crashed instead of
-capturing day-one snapshot, or duplicate event_id was delivered twice.
+capturing day-one snapshot, webhook failure recorded dedupe before delivery,
+or a delivery error skipped snapshot capture.
 """
 
 from datetime import date
+
+import pytest
 
 from facet_intelligence.inventory.models import ListingState
 from facet_intelligence.inventory.signals import run_daily_inventory_signals
@@ -56,6 +59,9 @@ class FakeEventStore:
         self.seen: set[str] = set()
         self.recorded: list[dict] = []
 
+    def is_emitted(self, tenant_id: str, event_id: str) -> bool:
+        return event_id in self.seen
+
     def record_if_new(self, tenant_id: str, event: dict) -> bool:
         event_id = event["event_id"]
         if event_id in self.seen:
@@ -82,7 +88,7 @@ class TestRunDailyInventorySignals:
         assert result.disappearances == 0
         assert snapshots.capture_calls == [("ringspo-us", date(2026, 3, 7))]
 
-    def test_price_drop_emitted_against_yesterday_snapshot(self) -> None:
+    def test_price_drop_detected_on_dry_run_without_dedupe_record(self) -> None:
         snapshots = FakeSnapshotStore()
         snapshots.snapshots[date(2026, 3, 6)] = {"A": _listing("A", 100.0)}
         snapshots.live = {"A": _listing("A", 90.0)}
@@ -96,9 +102,43 @@ class TestRunDailyInventorySignals:
             deliver_webhooks=False,
         )
         assert result.price_drops == 1
+        assert result.events_delivered == 0
+        assert events.recorded == []
+
+    def test_price_drop_delivered_and_recorded(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.tenant_webhook_url",
+            lambda tenant_id: "http://127.0.0.1:9999/webhook",
+        )
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.deliver_tenant_event",
+            lambda tenant_id, event: True,
+        )
+        snapshots = FakeSnapshotStore()
+        snapshots.snapshots[date(2026, 3, 6)] = {"A": _listing("A", 100.0)}
+        snapshots.live = {"A": _listing("A", 90.0)}
+        events = FakeEventStore()
+        result = run_daily_inventory_signals(
+            "ringspo-us",
+            date(2026, 3, 7),
+            snapshot_store=snapshots,
+            miss_store=FakeMissStore(),
+            event_store=events,
+            deliver_webhooks=True,
+        )
+        assert result.price_drops == 1
+        assert result.events_delivered == 1
         assert events.recorded[0]["event_type"] == "diamond.price_dropped"
 
-    def test_duplicate_event_id_not_recorded_twice(self) -> None:
+    def test_duplicate_event_id_not_recorded_twice(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.tenant_webhook_url",
+            lambda tenant_id: "http://127.0.0.1:9999/webhook",
+        )
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.deliver_tenant_event",
+            lambda tenant_id, event: True,
+        )
         snapshots = FakeSnapshotStore()
         snapshots.snapshots[date(2026, 3, 6)] = {"A": _listing("A", 100.0)}
         snapshots.live = {"A": _listing("A", 90.0)}
@@ -109,7 +149,7 @@ class TestRunDailyInventorySignals:
             snapshot_store=snapshots,
             miss_store=FakeMissStore(),
             event_store=events,
-            deliver_webhooks=False,
+            deliver_webhooks=True,
         )
         first_count = len(events.recorded)
         result = run_daily_inventory_signals(
@@ -118,7 +158,96 @@ class TestRunDailyInventorySignals:
             snapshot_store=snapshots,
             miss_store=FakeMissStore(),
             event_store=events,
-            deliver_webhooks=False,
+            deliver_webhooks=True,
         )
         assert len(events.recorded) == first_count
         assert result.events_skipped_duplicate == 1
+
+    def test_delivery_happens_before_dedupe_record(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        order: list[str] = []
+
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.tenant_webhook_url",
+            lambda tenant_id: "http://127.0.0.1:9999/webhook",
+        )
+
+        def _deliver(tenant_id: str, event: dict) -> bool:
+            order.append("deliver")
+            return True
+
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.deliver_tenant_event",
+            _deliver,
+        )
+
+        class OrderingEventStore(FakeEventStore):
+            def record_if_new(self, tenant_id: str, event: dict) -> bool:
+                order.append("record")
+                return super().record_if_new(tenant_id, event)
+
+        snapshots = FakeSnapshotStore()
+        snapshots.snapshots[date(2026, 3, 6)] = {"A": _listing("A", 100.0)}
+        snapshots.live = {"A": _listing("A", 90.0)}
+        run_daily_inventory_signals(
+            "ringspo-us",
+            date(2026, 3, 7),
+            snapshot_store=snapshots,
+            miss_store=FakeMissStore(),
+            event_store=OrderingEventStore(),
+            deliver_webhooks=True,
+        )
+        assert order == ["deliver", "record"]
+
+    def test_webhook_failure_does_not_record_and_still_captures_snapshot(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.tenant_webhook_url",
+            lambda tenant_id: "http://127.0.0.1:9999/webhook",
+        )
+
+        def _fail_delivery(tenant_id: str, event: dict) -> bool:
+            raise RuntimeError("webhook unavailable")
+
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.deliver_tenant_event",
+            _fail_delivery,
+        )
+        snapshots = FakeSnapshotStore()
+        snapshots.snapshots[date(2026, 3, 6)] = {"A": _listing("A", 100.0)}
+        snapshots.live = {"A": _listing("A", 90.0)}
+        events = FakeEventStore()
+        result = run_daily_inventory_signals(
+            "ringspo-us",
+            date(2026, 3, 7),
+            snapshot_store=snapshots,
+            miss_store=FakeMissStore(),
+            event_store=events,
+            deliver_webhooks=True,
+        )
+        assert events.recorded == []
+        assert result.events_delivery_failed == 1
+        assert result.events_delivered == 0
+        assert snapshots.capture_calls == [("ringspo-us", date(2026, 3, 7))]
+
+    def test_no_webhook_url_does_not_record_dedupe(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(
+            "facet_intelligence.inventory.signals.tenant_webhook_url",
+            lambda tenant_id: None,
+        )
+        snapshots = FakeSnapshotStore()
+        snapshots.snapshots[date(2026, 3, 6)] = {"A": _listing("A", 100.0)}
+        snapshots.live = {"A": _listing("A", 90.0)}
+        events = FakeEventStore()
+        result = run_daily_inventory_signals(
+            "ringspo-us",
+            date(2026, 3, 7),
+            snapshot_store=snapshots,
+            miss_store=FakeMissStore(),
+            event_store=events,
+            deliver_webhooks=True,
+        )
+        assert events.recorded == []
+        assert result.events_skipped_no_webhook == 1
+        assert result.events_delivered == 0

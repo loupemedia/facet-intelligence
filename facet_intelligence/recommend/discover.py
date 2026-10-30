@@ -9,6 +9,9 @@ from config.tenants import get_tenant
 from facet_intelligence.ingestion.models import CanonicalListing
 from facet_intelligence.inventory.store import ListingStore
 from facet_intelligence.recommend.categories import (
+    BEST_SPARKLE,
+    GOOD_VALUE,
+    LOOK_LARGEST,
     MAX_ALTERNATIVES,
     VALID_CATEGORIES,
     rank_candidates,
@@ -24,6 +27,9 @@ logger = logging.getLogger(__name__)
 
 DEFERRED_BUYER_INTENTS = frozenset({"safe_premium", "lab_value"})
 VALID_BUYER_INTENTS = VALID_CATEGORIES
+# SparkleScore is called per listing. Cap the scored pool after constraint
+# filters so a page load cannot score the full tenant inventory.
+DISCOVER_SCORE_CAP = 20
 
 
 @dataclass
@@ -82,6 +88,47 @@ def _filter_discover_candidates(
                 continue
         filtered.append(listing)
     return filtered
+
+
+def _preselect_for_scoring(
+    listings: list[CanonicalListing],
+    rank_intent: str,
+    cap: int = DISCOVER_SCORE_CAP,
+) -> list[CanonicalListing]:
+    """Keep at most ``cap`` listings using a cheap attribute sort.
+
+    Displayed scores still come from the tenant scoring backend. This sort only
+    decides who is sent to that backend when the filtered pool is larger than
+    the cap.
+    """
+    if len(listings) <= cap:
+        return list(listings)
+    if rank_intent == LOOK_LARGEST:
+        ordered = sorted(
+            listings,
+            key=lambda listing: listing.carat if listing.carat is not None else 0.0,
+            reverse=True,
+        )
+    elif rank_intent == BEST_SPARKLE:
+        ordered = sorted(
+            listings,
+            key=lambda listing: vanilla_composite({
+                "cut": listing.cut,
+                "color": listing.color,
+                "clarity": listing.clarity,
+                "carat": listing.carat,
+                "price": listing.price,
+            })[0],
+            reverse=True,
+        )
+    else:
+        if rank_intent != GOOD_VALUE:
+            logger.warning("Unknown rank intent %s; preselecting by price", rank_intent)
+        ordered = sorted(
+            listings,
+            key=lambda listing: listing.price if listing.price is not None else float("inf"),
+        )
+    return ordered[:cap]
 
 
 def _score_listings(
@@ -148,22 +195,26 @@ def discover_listings(
         in_stock_only=bool(constraints.get("in_stock", True)),
     )
     candidates = _filter_discover_candidates(all_listings, constraints)
+    scored_candidates = _preselect_for_scoring(candidates, rank_intent)
 
     meta: dict[str, Any] = {
         "buyer_intent": str(body.get("buyer_intent")),
         "rank_by": rank_intent,
         "candidate_count": len(all_listings),
         "filtered_count": len(candidates),
+        "scored_count": len(scored_candidates),
     }
+    if len(candidates) > DISCOVER_SCORE_CAP:
+        meta["score_cap"] = DISCOVER_SCORE_CAP
 
-    if not candidates:
+    if not scored_candidates:
         return DiscoverResult(
             recommendations=[],
             generated_at=datetime.now(PIPELINE_TZ).isoformat(),
             meta={**meta, "reason_if_empty": "no_candidates_after_filters"},
         )
 
-    scored = _score_listings(backend_name, tenant_id, candidates, backend)
+    scored = _score_listings(backend_name, tenant_id, scored_candidates, backend)
     ranked = rank_candidates(scored, rank_intent, limit=MAX_ALTERNATIVES)
     recommendations = [
         build_discover_payload(candidate, rank_intent, rank_index=index)

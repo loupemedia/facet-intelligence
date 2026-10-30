@@ -60,7 +60,7 @@ Tenant inventory (CSV/JSON/feed/country pool)
         │
         ├── diff → events (disappeared, price_dropped, better_match)
         │
-        └── recommend/discover → filter → SparkleScore (top N) → rank
+        └── recommend/discover → filter → SparkleScore (top N, discover cap 20) → rank
                     │
                     ▼
               webhook → diamond-prices engagement / B2B ESP

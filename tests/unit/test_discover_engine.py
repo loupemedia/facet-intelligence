@@ -1,18 +1,24 @@
 """Discover engine filters (Epic 3.4).
 
 Test intent: discover filters apply budget, carat and diamond_type bounds before
-ranking; buyer_intent is required.
+ranking; buyer_intent is required; SparkleScore is called for at most
+DISCOVER_SCORE_CAP listings after those filters.
 
-Would fail if: a listing outside carat_max appeared in the filtered candidate set.
+Would fail if: a listing outside carat_max appeared in the filtered candidate
+set, or a 28-listing pool produced 28 score_listing calls.
 """
 
 import pytest
 
 from facet_intelligence.ingestion.models import CanonicalListing
 from facet_intelligence.recommend.discover import (
+    DISCOVER_SCORE_CAP,
     _filter_discover_candidates,
+    _preselect_for_scoring,
     _resolve_rank_intent,
+    discover_listings,
 )
+from facet_intelligence.scoring.vanilla import VanillaScorer
 
 
 def _listing(
@@ -129,3 +135,92 @@ class TestResolveRankIntent:
 
     def test_buyer_intent_used_when_category_absent(self) -> None:
         assert _resolve_rank_intent({"buyer_intent": "look_largest"}) == "look_largest"
+
+
+class CountingScorer:
+    def __init__(self) -> None:
+        self.calls: list[str] = []
+
+    def score_listing(self, listing: CanonicalListing, tenant_id: str) -> dict:
+        self.calls.append(listing.listing_id)
+        return {"composite": 50.0, "pillars": {}}
+
+
+class FakeDiscoverStore:
+    def __init__(self, listings: list[CanonicalListing]) -> None:
+        self._listings = list(listings)
+
+    def fetch_listings(self, tenant_id: str, *, in_stock_only: bool = True) -> list[CanonicalListing]:
+        if in_stock_only:
+            return [listing for listing in self._listings if listing.availability == "in_stock"]
+        return list(self._listings)
+
+
+class TestDiscoverScoreCap:
+    def test_preselect_keeps_cheapest_for_good_value(self) -> None:
+        listings = [_listing(f"S{i}", price=float(1000 + i)) for i in range(DISCOVER_SCORE_CAP + 5)]
+        selected = _preselect_for_scoring(listings, "good_value")
+        assert len(selected) == DISCOVER_SCORE_CAP
+        assert [listing.listing_id for listing in selected] == [
+            f"S{i}" for i in range(DISCOVER_SCORE_CAP)
+        ]
+
+    def test_sparklescore_path_scores_at_most_cap(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        scorer = CountingScorer()
+        monkeypatch.setattr(
+            "facet_intelligence.recommend.discover.get_scoring_backend",
+            lambda tenant_id, requested, tenant_default: scorer,
+        )
+        listings = [
+            _listing(f"S{i}", price=float(1000 + i), carat=1.0)
+            for i in range(DISCOVER_SCORE_CAP + 8)
+        ]
+        result = discover_listings(
+            "ringspo-us",
+            {"buyer_intent": "good_value", "constraints": {}},
+            store=FakeDiscoverStore(listings),
+        )
+        assert len(scorer.calls) == DISCOVER_SCORE_CAP
+        assert result.meta["scored_count"] == DISCOVER_SCORE_CAP
+        assert result.meta["score_cap"] == DISCOVER_SCORE_CAP
+        assert result.meta["filtered_count"] == DISCOVER_SCORE_CAP + 8
+
+    def test_under_cap_scores_every_filtered_listing(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        scorer = CountingScorer()
+        monkeypatch.setattr(
+            "facet_intelligence.recommend.discover.get_scoring_backend",
+            lambda tenant_id, requested, tenant_default: scorer,
+        )
+        listings = [_listing("A", price=5000), _listing("B", price=6000)]
+        result = discover_listings(
+            "ringspo-us",
+            {"buyer_intent": "good_value"},
+            store=FakeDiscoverStore(listings),
+        )
+        assert scorer.calls == ["A", "B"]
+        assert result.meta["scored_count"] == 2
+        assert "score_cap" not in result.meta
+
+    def test_vanilla_backend_still_ranks_without_score_listing_calls(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        monkeypatch.setattr(
+            "facet_intelligence.recommend.discover.get_scoring_backend",
+            lambda tenant_id, requested, tenant_default: VanillaScorer(),
+        )
+        listings = [_listing(f"S{i}", price=float(2000 + i)) for i in range(DISCOVER_SCORE_CAP + 3)]
+        result = discover_listings(
+            "ringspo-us",
+            {"buyer_intent": "good_value", "scoring_backend": "vanilla"},
+            store=FakeDiscoverStore(listings),
+        )
+        assert len(result.recommendations) == 5
+        assert result.meta["scored_count"] == DISCOVER_SCORE_CAP
+

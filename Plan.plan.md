@@ -1,7 +1,7 @@
 # Facet Intelligence — Master Plan
 
 **Status:** Epic 3 complete — `POST /v1/recommend` and `POST /v1/discover` shipped  
-**Updated:** 2026-08-07  
+**Updated:** 2026-09-10  
 **Product:** Facet Intelligence (`facet-intelligence` repo)
 
 ## Vision
@@ -18,6 +18,9 @@ Independent, licensable diamond recommendation and inventory-intelligence API. O
 | `POST /v1/inventory/sync` + `inventory.synced` stub | ✅ Story 1.4 |
 | `POST /v1/recommend` (substitute_diamond, quality floor) | ✅ Epic 3.3 |
 | `POST /v1/discover` (intent-first) | ✅ Epic 3.4 |
+| Webhook outbox (deliver before dedupe; snapshot always) | ✅ Epic 2 Story 2.5 (2026-09-10) |
+
+**Cross-repo dogfood sequence (P0–P3):** [`diamond-prices/docs/operations/facet-intelligence-staging-e2e.md`](../diamond-prices/docs/operations/facet-intelligence-staging-e2e.md) § Dogfood closure sequence.
 
 ## Phases
 

@@ -55,14 +55,20 @@ def main() -> int:
                 deliver_webhooks=not args.dry_run,
             )
             logger.info(
-                "%s %s: snapshot=%d drops=%d disappeared=%d events=%d",
+                "%s %s: snapshot=%d drops=%d disappeared=%d delivered=%d "
+                "failed=%d no_webhook=%d duplicates=%d",
                 SCRIPT_ID,
                 tenant_id,
                 result.snapshot_rows,
                 result.price_drops,
                 result.disappearances,
                 result.events_delivered,
+                result.events_delivery_failed,
+                result.events_skipped_no_webhook,
+                result.events_skipped_duplicate,
             )
+            if result.events_delivery_failed or result.events_skipped_no_webhook:
+                exit_code = 1
         except KeyError:
             logger.error("Unknown tenant: %s", tenant_id)
             exit_code = 1
