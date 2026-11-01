@@ -1,3 +1,16 @@
+# Sibling repos
+All clones sit side by side in ~/Documents/GitHub/. Paths below are relative to this repo.
+Read across freely. When searching a sibling, pass its folder as the search path. Edits outside this repo need owner approval; say which repo you are changing.
+Detailed product and boundary map: `../diamond-prices/docs/architecture/platform-product-boundaries.md`
+
+| Repo | Path | Look there for |
+|---|---|---|
+| diamond-prices | ../diamond-prices | Pricing pipeline, LDN/LDO WordPress plugins, site configs, GTM strategy, PRDs |
+| sparklescoredata | ../sparklescoredata | SparkleScore scoring engine and criteria |
+| facet-intelligence (this repo) | . | Inventory signals and recommendation API |
+| jewelrep | ../jewelrep | Directory reviews, ingoodrepute.com, jewelrysuppliers.net |
+| loupe-mcp | ../loupe-mcp | Operator MCP server for WordPress and Kinsta |
+
 # Key Reference Documents
 - `docs/ENGINEERING_PRINCIPLES.md` — core principles (summary; sync from diamond-prices for full text)
 - `docs/ARCHITECTURE.md` — system overview
